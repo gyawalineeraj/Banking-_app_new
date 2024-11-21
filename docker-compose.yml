@@ -1,0 +1,34 @@
+services:
+  ng-bank:
+    image: myapp:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ngBank
+    ports:
+      - 8080:8080
+    depends_on:
+      - ng-database
+      - mail-server
+  ng-database:
+    image: mysql
+    container_name: ngMysqlDb
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=ng_bank
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
+  mail-server:
+    image: maildev/maildev
+    container_name: NgBankMailServer
+    ports:
+      - 1080:1080
+      - 1025:1025
+
+volumes:
+  mysql_data:
+    driver: local
